@@ -55,7 +55,6 @@ def display(stdscr, client):
         3, 1,
         get_local_time().format('YYYY-MMM-D hh:mm:ss A'))
     line_statuses = client.get_status()
-    print(line_statuses)
     line_statuses = sorted(line_statuses, key=lambda l: l['name'])
     y = 5
     for line_status in line_statuses:
