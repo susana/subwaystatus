@@ -29,7 +29,7 @@ def run(stdscr):
             scheduler.shutdown()
             break
         elif c == ord('r'):
-            display()
+            display(stdscr, client)
         elif c == curses.KEY_RESIZE:
             stdscr.refresh()
 
