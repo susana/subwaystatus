@@ -2,23 +2,28 @@
 
 import curses
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.events import EVENT_JOB_MISSED
 
 from subwaystatus.utils import get_upcoming_hour
 from subwaystatus.utils import get_local_time
 from subwaystatus.client import Client
 
 
+def handle_missed_job(event):
+    pass
+
 def run(stdscr):
     client = Client("http://www.mta.info/service_status_json/")
     scheduler = BackgroundScheduler()
     stdscr.bkgd(' ', curses.color_pair(0))
-
+    scheduler.add_listener(handle_missed_job, EVENT_JOB_MISSED)
     scheduler.add_job(
         display,
         args=[stdscr, client],
         trigger='interval',
         next_run_time=get_upcoming_hour(),
-        hours=1)
+        hours=1,
+        coalesce=True)
     scheduler.start()
     display(stdscr, client)
 
@@ -34,18 +39,19 @@ def run(stdscr):
             stdscr.refresh()
 
 
-def format_status_msg(status):
+def get_message(status):
+    msg = []
     if status == "GOOD SERVICE":
-        code = "💚\tOK"
+        msg.extend(["💚", "OK"])
     elif status == "DELAYS":
-        code = "💛\tDelays"
+        msg.extend(["💛", "Delays"])
     elif status == "PLANNED WORK":
-        code = "💖\tPlanned Work"
+        msg.extend(["💖", "Planned Work"])
     elif status == "SERVICE CHANGE":
-        code = "💞\tService change"
+        msg.extend(["💞", "Service change"])
     else:
-        code = "❓"
-    return code
+        msg.extend(["❓", "Unknown status"])
+    return msg
 
 
 def display(stdscr, client):
@@ -55,11 +61,13 @@ def display(stdscr, client):
         3, 1,
         get_local_time().format('YYYY-MMM-D hh:mm:ss A'))
     line_statuses = client.get_status()
-    line_statuses = sorted(line_statuses, key=lambda l: l['name'])
+    line_statuses = sorted(line_statuses, key=lambda l: l['line'])
     y = 5
     for line_status in line_statuses:
-        status_msg = format_status_msg(line_status['status'])
-        stdscr.addstr(y, 1, "{}\t{}".format(line_status['name'], status_msg))
+        symbol, msg = get_message(line_status['status'])
+        line = stdscr.addstr(y, 1, line_status['line'], curses.A_BOLD)
+        stdscr.addstr(y, 8, symbol)
+        stdscr.addstr(y, 11, msg)
         y += 1
     stdscr.refresh()
 

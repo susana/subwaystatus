@@ -71,6 +71,6 @@ class Client(object):
                 text = soup.get_text()
                 text = text
                 text = text.strip()
-                cleaned_statuses.append({"name": name, "status": status, "text": text})
+                cleaned_statuses.append({"line": name, "status": status, "text": text})
 
         return cleaned_statuses
