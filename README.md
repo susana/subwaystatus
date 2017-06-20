@@ -7,7 +7,7 @@ A very simple CLI program that displays the current status of the MTA subway lin
 ```bash
 > git clone <this-repo>
 > pip3 install . # at the root of the repo
-> subway
+> subwaystatus
 ```
 
 ## Usage
