@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 import curses
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.events import EVENT_JOB_MISSED
@@ -13,6 +15,7 @@ def handle_missed_job(event):
     pass
 
 def run(stdscr):
+    logging.getLogger('apscheduler.executors').setLevel(logging.ERROR)
     client = Client("http://www.mta.info/service_status_json/")
     scheduler = BackgroundScheduler()
     stdscr.bkgd(' ', curses.color_pair(0))
