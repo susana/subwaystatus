@@ -58,6 +58,7 @@ def get_message(status):
 
 
 def display(stdscr, client):
+    stdscr.clear()
     stdscr.addstr(0, 1, "{}".format("🚇  Subway Health"))
     stdscr.addstr(2, 1, "{}:".format("Last update"))
     stdscr.addstr(
