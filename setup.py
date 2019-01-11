@@ -18,7 +18,7 @@ setup(
         'beautifulsoup4==4.6.0',
         'python-dateutil==2.6.0',
         'pytz==2017.2',
-        'requests==2.14.2',
+        'requests==2.20.0',
         'six==1.10.0',
         'tzlocal==1.4',
     ]
